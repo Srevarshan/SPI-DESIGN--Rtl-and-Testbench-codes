@@ -1,0 +1,30 @@
+module spi(pclk,presetn,paddr,pwrite,psel,penable,pwdata,miso,sclk,ss,spiintr_req,mosi,prdata,pready,pslverr);
+input pclk,presetn,pwrite,psel,penable,miso;
+input[2:0]paddr;
+input[7:0]pwdata;
+output ss,sclk,spiintr_req,mosi,pready,pslverr;
+output [7:0]prdata;
+wire [1:0]spimode;
+wire [1:0]state;
+wire spe;
+wire [7:0]misodata;
+wire [7:0]mosidata;
+wire senddata,receivedata;
+wire tip;
+wire mstr,cpol,cpha,lsbfe,spiswai;
+wire [2:0]sppr;
+wire [2:0]spr;
+wire flaglow,flaghigh,flagslow,flagshigh;
+wire [11:0]baudratedivisor;
+wire [2:0]count;
+wire [2:0]count1;
+wire [2:0]count2;
+wire [2:0]count3;
+wire [15:0]target;
+wire [15:0]cnt;
+apbslave dut(pclk,presetn,paddr,pwrite,psel,penable,pwdata,ss,misodata,receivedata,tip,prdata,mstr,cpol,cpha,lsbfe,spiswai,sppr,spr,spiintr_req,pready,pslverr,senddata,mosidata,spimode,state,spe);
+baudgenerator dut1(pclk,presetn,spimode,spiswai,sppr,spr,cpol,cpha,ss,sclk,flaglow,flaghigh,flagslow,flagshigh,baudratedivisor);
+shiftregister dut2(pclk,presetn,ss,senddata,lsbfe,cpha,cpol,flaglow,flaghigh,flagslow,flagshigh,mosidata,miso,receivedata,mosi,misodata,count,count1,count2,count3);
+sscontrol dut3(pclk,presetn,mstr,spiswai,spimode,senddata,baudratedivisor,target,receivedata,ss,tip,cnt);
+
+endmodule
