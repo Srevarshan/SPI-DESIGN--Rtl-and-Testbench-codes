@@ -114,6 +114,4 @@ begin
  misolsb(8'b11010101);
  $finish;
 end 
-initial
-#1200 $finish;
 endmodule
